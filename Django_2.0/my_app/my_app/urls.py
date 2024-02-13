@@ -22,7 +22,7 @@ def welcome(request):
         "<ul>\n"
         "<li><h1>Welcome to My App!<h1></li>\n"
         "<li>This is a list-based welcome page.</li>\n"
-        "<li>Here are some features of this API:</li>\n"
+        "<li>Here are some features of this API enjoy:</li>\n"
         "<li>1. <a href='/Capture-Information/drones' >Capture-Information/drones</a></li>\n"
         "<li>2. <a href='/Capture-Information/medications'>Capture-Information/medications</a></li>\n"
         "<li>3. <a href='/Capture-Information/Load/drone'>Capture-Information/Load/drone</a></li>\n"
