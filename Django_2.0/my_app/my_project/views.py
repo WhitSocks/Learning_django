@@ -9,10 +9,18 @@ from rest_framework.parsers import JSONParser
 from rest_framework import viewsets
 from .models import Drone,Medication,DroneMedication,BatteryLog
 from .serialize import DroneSerializer,MedicationSerializer,DroneMedicationSerializer,BatteryLogSerializer
+from django.core.management.base import BaseCommand
 
+
+def prevent_overlaod(drone, medication):
+    """Checks whether the given drone can carry the specified medication without overloading it"""
+    if medication.weight > drone.weight_limit:
+        raise Exception(f"The medication {medication.name} is too heavy for the drone {drone.serial_number}")
+    
 class DroneModelViewSet(viewsets.ModelViewSet):
    queryset = Drone.objects.all()
    serializer_class = DroneSerializer
+
 
 class MedicationViewSet(viewsets.ModelViewSet):
     queryset = Medication.objects.all()
@@ -21,10 +29,29 @@ class MedicationViewSet(viewsets.ModelViewSet):
 class DroneMedicationViewSet(viewsets.ModelViewSet):
     queryset = DroneMedication.objects.all()
     serializer_class = DroneMedicationSerializer
+    def create(self, request, *args, **kwargs):
+        """
+        Custom create method to call prevent_drone_overload function.
+
+        """
+        drone_id = request.data.get('drone')
+        medication_id = request.data.get('medication')
+
+        drone = Drone.objects.get(id=drone_id)
+        medication = Medication.objects.get(id=medication_id)
+
+       
+        prevent_overlaod(drone, medication)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data)
+        
 
 class BatteryLogViewSet(viewsets.ModelViewSet):
     queryset = BatteryLog.objects.all()
     serializer_class = BatteryLogSerializer
+
 
 
 @api_view(['GET'])
@@ -68,4 +95,5 @@ def drone_battery(request):
 
     # Return a response with the serialized battery_capacity field
     return Response([d['battery_capacity'] for d in serializer.data])
+
 

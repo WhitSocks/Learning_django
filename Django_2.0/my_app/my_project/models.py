@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 class Drone(models.Model):
-    serial_number = models.CharField(max_length=100,unique=True,primary_key=True)
+    serial_number = models.CharField(max_length=100,unique=True)
     model = models.CharField(max_length=20, choices=[('Lightweight', 'Lightweight'), ('Middleweight', 'Middleweight'), ('Cruiserweight', 'Cruiserweight'), ('Heavyweight', 'Heavyweight')])
     weight_limit = models.FloatField()
     battery_capacity = models.IntegerField()
@@ -14,7 +14,7 @@ class Drone(models.Model):
 class Medication(models.Model):
     name = models.CharField(max_length=100)
     weight = models.FloatField()
-    code = models.CharField(max_length=20,primary_key=True)
+    code = models.CharField(max_length=20 , unique=True)
    
 
     def __str__(self):
